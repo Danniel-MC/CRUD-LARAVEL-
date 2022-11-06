@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
@@ -13,7 +14,10 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        //
+        //code...
+        $categories = Category::all();
+
+        return view('categories.index', ['categories' => $categories]);
     }
 
     /**
@@ -23,7 +27,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        //code ...
+
     }
 
     /**
@@ -34,7 +39,19 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //code ...
+        $request->validate([
+            // validate
+            'name' => 'required|unique:categories|max:255',
+            'color' => 'required|min:8',
+        ]);
+
+        $category = new Category;
+        $category->name = $request->name;
+        $category->color = $request->color;
+        $category->save();
+
+        return redirect()->route('categories.index')->with('success', 'Category Created Successfully');
     }
 
     /**
@@ -45,7 +62,9 @@ class CategoriesController extends Controller
      */
     public function show($id)
     {
-        //
+        //code ...
+        $category = Category::find($id);
+        return view('categories.show', ['category' => $category]); // manda objeto category con variable $category
     }
 
     /**
@@ -56,7 +75,8 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        //code ...
+
     }
 
     /**
@@ -68,7 +88,13 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //code ...
+        $category = Category::find($id);
+        $category->name = $request->name;
+        $category->color = $request->color;
+        $category->save();
+
+        return redirect()->route('categories.index')->with('success', 'Category Updated Successfully');
     }
 
     /**
@@ -79,6 +105,10 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //code ...
+        $category = Category::find($id);
+        $category->delete();
+
+        return redirect()->route('categories.index')->with('success', 'Destroy Successfully');
     }
 }
